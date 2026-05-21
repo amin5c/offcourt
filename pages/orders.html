@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Orders — OffCourt</title>
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body data-page="orders">
+
+  <nav class="nav" id="nav">
+    <a class="nav-logo" href="../index.html">Off<span>Court</span></a>
+    <div class="nav-links">
+      <a href="../index.html" id="nl-home">Home</a>
+      <a href="shop.html" id="nl-shop">Shop</a>
+      <a href="drops.html" id="nl-drops">Drop Radar</a>
+      <a href="sale.html" id="nl-sale">Sale</a>
+      <a href="about.html" id="nl-about">About</a>
+      <a href="contact.html" id="nl-contact">Contact</a>
+    </div>
+    <div class="nav-right">
+      <div id="nav-auth-slot"></div>
+      <button class="cart-btn" onclick="openCart()">🛒 <span class="cbadge" id="cbadge">0</span></button>
+      <button class="ham" id="ham" onclick="toggleMob()"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
+
+  <div class="page-wrap">
+    <div class="page-header">
+      <h1>My Orders</h1>
+      <p>Real order history from your Drop Club account (Supabase).</p>
+    </div>
+    <section class="section" id="orders-root">
+      <p class="orders-loading">Loading orders…</p>
+    </section>
+    <footer class="footer">
+      <div class="f-brand"><h3>Off<span>Court</span></h3></div>
+      <div class="f-col"><h4>Club</h4><a href="drops.html">Drop Radar</a><a href="orders.html">My Orders</a></div>
+    </footer>
+    <div class="f-btm"><span>© 2025 OffCourt.</span></div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="../js/config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../js/supabase-client.js"></script>
+  <script src="../js/db.js"></script>
+  <script src="../js/products.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/cart.js"></script>
+  <script src="../js/nav.js"></script>
+  <script>
+    function formatDate(iso) {
+      return new Date(iso).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+    }
+
+    async function loadOrders() {
+      var root = document.getElementById('orders-root');
+      if (!isSupabaseConfigured()) {
+        root.innerHTML = '<div class="info-card"><p>Add Supabase keys in <code>js/config.js</code> and sign in. See <strong>SETUP.md</strong>.</p></div>';
+        return;
+      }
+      var user = await getAuthUser();
+      if (!user) {
+        root.innerHTML = '<div class="info-card"><p>Please <button class="btn-gold" onclick="openAuth()">sign in</button> to view your orders.</p></div>';
+        return;
+      }
+      var orders = await fetchUserOrders(user.id);
+      if (!orders.length) {
+        root.innerHTML = '<div class="info-card"><p>No orders yet. <a href="shop.html" style="color:var(--gold)">Shop the collection</a> or join a <a href="drops.html" style="color:var(--gold)">drop waitlist</a>.</p></div>';
+        return;
+      }
+      root.innerHTML = orders.map(function(o) {
+        var items = (o.order_items || []).map(function(it) {
+          return '<li>' + it.qty + '× ' + it.name + ' — $' + (it.price * it.qty) + '</li>';
+        }).join('');
+        var del = o.delivery_type === 'campus' ? '🏫 Campus pickup' : '📦 Shipped';
+        return (
+          '<div class="order-card">' +
+            '<div class="order-card-head"><strong>' + o.order_number + '</strong><span>' + formatDate(o.created_at) + '</span></div>' +
+            '<div class="order-meta">' + del + ' · Total <strong>$' + o.total + '</strong></div>' +
+            '<ul class="order-items">' + items + '</ul>' +
+          '</div>'
+        );
+      }).join('');
+    }
+
+    document.addEventListener('DOMContentLoaded', async function() {
+      await initAuth();
+      loadOrders();
+    });
+  </script>
+</body>
+</html>

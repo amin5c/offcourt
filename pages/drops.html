@@ -3,20 +3,20 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Sale — OffCourt</title>
+  <title>Drop Radar — OffCourt</title>
   <link rel="stylesheet" href="../css/style.css" />
 </head>
-<body data-page="sale">
+<body data-page="drops">
 
   <nav class="nav" id="nav">
     <a class="nav-logo" href="../index.html">Off<span>Court</span></a>
     <div class="nav-links">
       <a href="../index.html" id="nl-home">Home</a>
-      <a href="shop.html"     id="nl-shop">Shop</a>
-      <a href="drops.html"    id="nl-drops">Drop Radar</a>
-      <a href="sale.html"     id="nl-sale">Sale</a>
-      <a href="about.html"    id="nl-about">About</a>
-      <a href="contact.html"  id="nl-contact">Contact</a>
+      <a href="shop.html" id="nl-shop">Shop</a>
+      <a href="drops.html" id="nl-drops">Drop Radar</a>
+      <a href="sale.html" id="nl-sale">Sale</a>
+      <a href="about.html" id="nl-about">About</a>
+      <a href="contact.html" id="nl-contact">Contact</a>
     </div>
     <div class="nav-right">
       <div id="nav-auth-slot"></div>
@@ -25,37 +25,34 @@
     </div>
   </nav>
   <div class="mob-menu" id="mob-menu">
-    <a href="../index.html" id="ml-home"    onclick="closeMob()">Home</a>
-    <a href="shop.html"     id="ml-shop"    onclick="closeMob()">Shop</a>
-    <a href="drops.html"    id="ml-drops"   onclick="closeMob()">Drop Radar</a>
-    <a href="sale.html"     id="ml-sale"    onclick="closeMob()">Sale</a>
-    <a href="about.html"    id="ml-about"   onclick="closeMob()">About</a>
-    <a href="contact.html"  id="ml-contact" onclick="closeMob()">Contact</a>
+    <a href="../index.html" id="ml-home" onclick="closeMob()">Home</a>
+    <a href="shop.html" id="ml-shop" onclick="closeMob()">Shop</a>
+    <a href="drops.html" id="ml-drops" onclick="closeMob()">Drop Radar</a>
+    <a href="sale.html" id="ml-sale" onclick="closeMob()">Sale</a>
+    <a href="about.html" id="ml-about" onclick="closeMob()">About</a>
+    <a href="contact.html" id="ml-contact" onclick="closeMob()">Contact</a>
   </div>
 
   <div class="page-wrap">
-
-    <!-- SALE HEADER -->
-    <div class="sale-header">
-      <div class="sale-tag">🔥 Limited Time Sale</div>
-      <h1>Up to 40% Off</h1>
-      <p>Curated markdowns on campus-favorite sneakers and street-ready styles.</p>
+    <div class="drop-hero">
+      <div class="sec-tag">✦ Drop Club Feature</div>
+      <h1>Drop Radar</h1>
+      <p>Limited pairs sell out fast. Join the waitlist to get first access and secure reserved pickup at Sector 17, Chandigarh.</p>
     </div>
 
-    <!-- SALE PRODUCTS (only products that have an old/original price) -->
-    <div style="padding:24px">
-      <div id="sale-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;"></div>
-    </div>
+    <section class="section">
+      <div id="drops-grid" class="drops-grid"></div>
+      <p id="drops-empty" style="display:none;color:var(--muted);text-align:center;padding:40px">No upcoming drops loaded.</p>
+    </section>
 
     <footer class="footer">
-      <div class="f-brand"><h3>Off<span>Court</span></h3><p>Premium sneakers for the culture.</p></div>
+      <div class="f-brand"><h3>Off<span>Court</span></h3><p>Campus-first limited sneaker drops.</p></div>
+      <div class="f-col"><h4>Club</h4><a href="drops.html">Drop Radar</a><a href="orders.html">My Orders</a></div>
       <div class="f-col"><h4>Shop</h4><a href="shop.html">All Sneakers</a><a href="sale.html">Sale</a></div>
-      <div class="f-col"><h4>Company</h4><a href="about.html">About</a><a href="contact.html">Contact</a></div>
     </footer>
-    <div class="f-btm"><span>© 2025 OffCourt.</span></div>
+    <div class="f-btm"><span>© 2025 OffCourt Drop Club.</span></div>
   </div>
 
-  <!-- CART + CHECKOUT (same on every page) -->
   <div class="overlay" id="overlay" onclick="closeCart()"></div>
   <aside class="cdr" id="cdr">
     <div class="cdr-h"><div class="cdr-title">Your Cart</div><button class="xb" onclick="closeCart()">✕</button></div>
@@ -86,12 +83,20 @@
   <script src="../js/cart.js"></script>
   <script src="../js/nav.js"></script>
   <script>
-    onProductsReady(function() {
-      var saleItems = PRODUCTS.filter(function(p) { return p.old !== null; });
-      document.getElementById('sale-grid').innerHTML = saleItems.map(function(p, i) {
-        return cardHTML(p, i * 0.04);
-      }).join('');
-    });
+    function renderDrops() {
+      var drops = getDropProducts();
+      var grid = document.getElementById('drops-grid');
+      var empty = document.getElementById('drops-empty');
+      if (!drops.length) {
+        grid.innerHTML = '';
+        empty.style.display = 'block';
+        return;
+      }
+      empty.style.display = 'none';
+      grid.innerHTML = drops.map(dropCardHTML).join('');
+    }
+    function onWaitlistChanged() { renderDrops(); }
+    onProductsReady(renderDrops);
   </script>
 </body>
 </html>

@@ -13,7 +13,12 @@ document.addEventListener('DOMContentLoaded', function() {
   // We look at the URL and add the "active" class
   // to the matching nav link so it glows white
   var page = document.body.getAttribute('data-page');
-  var map  = { home: 'nl-home', shop: 'nl-shop', sale: 'nl-sale', about: 'nl-about', contact: 'nl-contact' };
+  var map  = { home: 'nl-home', shop: 'nl-shop', drops: 'nl-drops', sale: 'nl-sale', about: 'nl-about', contact: 'nl-contact', orders: 'nl-orders' };
+  var mmap = { home: 'ml-home', shop: 'ml-shop', drops: 'ml-drops', sale: 'ml-sale', about: 'ml-about', contact: 'ml-contact' };
+  if (mmap[page]) {
+    var mel = document.getElementById(mmap[page]);
+    if (mel) mel.classList.add('active');
+  }
   if (map[page]) {
     var el = document.getElementById(map[page]);
     if (el) el.classList.add('active');

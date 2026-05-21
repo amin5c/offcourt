@@ -13,6 +13,7 @@
     <div class="nav-links">
       <a href="../index.html" id="nl-home">Home</a>
       <a href="shop.html"     id="nl-shop">Shop</a>
+      <a href="drops.html"    id="nl-drops">Drop Radar</a>
       <a href="sale.html"     id="nl-sale">Sale</a>
       <a href="about.html"    id="nl-about">About</a>
       <a href="contact.html"  id="nl-contact">Contact</a>
@@ -26,6 +27,7 @@
   <div class="mob-menu" id="mob-menu">
     <a href="../index.html" id="ml-home"    onclick="closeMob()">Home</a>
     <a href="shop.html"     id="ml-shop"    onclick="closeMob()">Shop</a>
+    <a href="drops.html"    id="ml-drops"   onclick="closeMob()">Drop Radar</a>
     <a href="sale.html"     id="ml-sale"    onclick="closeMob()">Sale</a>
     <a href="about.html"    id="ml-about"   onclick="closeMob()">About</a>
     <a href="contact.html"  id="ml-contact" onclick="closeMob()">Contact</a>
@@ -115,31 +117,35 @@
   <div class="mbg" id="mbg">
     <div class="modal">
       <div class="modal-h"><div class="modal-title" id="modal-title">Checkout</div><button class="xb" onclick="closeModal()">✕</button></div>
-      <div class="modal-body" id="modal-body">
-        <div class="frow"><div class="fg"><label>First Name</label><input class="fi" id="o-fn" type="text" placeholder="First name" /></div><div class="fg"><label>Last Name</label><input class="fi" id="o-ln" type="text" placeholder="Last name" /></div></div>
-        <div class="fg"><label>Email</label><input class="fi" id="o-em" type="email" placeholder="your@email.com" /></div>
-        <div class="fg"><label>Address</label><input class="fi" id="o-ad" type="text" placeholder="Street address" /></div>
-        <div class="frow"><div class="fg"><label>City</label><input class="fi" id="o-ci" type="text" placeholder="City" /></div><div class="fg"><label>PIN</label><input class="fi" id="o-pi" type="text" placeholder="160001" /></div></div>
-        <div class="fg" style="margin-top:16px"><label>Card Number</label><input class="fi" id="o-cn" type="text" placeholder="4111 1111 1111 1111" maxlength="19" oninput="fmtCard(this)" /></div>
-        <div class="frow"><div class="fg"><label>Expiry</label><input class="fi" id="o-ex" type="text" placeholder="MM / YY" maxlength="7" oninput="fmtExp(this)" /></div><div class="fg"><label>CVV</label><input class="fi" id="o-cv" type="password" placeholder="•••" maxlength="3" /></div></div>
-        <button class="btn-gold" style="width:100%;margin-top:8px;padding:14px" onclick="placeOrder()">Place Order →</button>
-      </div>
+      <div class="modal-body" id="modal-body"></div>
     </div>
   </div>
   <div class="toast" id="toast"></div>
 
+  <script src="../js/config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../js/supabase-client.js"></script>
+  <script src="../js/db.js"></script>
   <script src="../js/products.js"></script>
   <script src="../js/auth.js"></script>
   <script src="../js/cart.js"></script>
   <script src="../js/nav.js"></script>
   <script>
-    function submitContact() {
+    async function submitContact() {
       var fn  = document.getElementById('c-fn').value.trim();
+      var ln  = document.getElementById('c-ln').value.trim();
       var em  = document.getElementById('c-em').value.trim();
+      var sub = document.getElementById('c-sub').value;
       var msg = document.getElementById('c-msg').value.trim();
       if (!fn || !em || !msg) { showToast('⚠️ Please fill in all required fields'); return; }
-      showToast('✅ Message sent! We\'ll reply within 24 hours.');
-      // Clear form
+
+      if (isSupabaseConfigured()) {
+        var r = await saveContactMessage({ name: fn + (ln ? ' ' + ln : ''), email: em, subject: sub, message: msg });
+        if (!r.ok) { showToast('⚠️ ' + (r.msg || 'Could not send')); return; }
+        showToast('✅ Message saved to support inbox!');
+      } else {
+        showToast('✅ Message sent! (Connect Supabase to save for real)');
+      }
       ['c-fn','c-ln','c-em','c-sub','c-msg'].forEach(function(id) {
         var el = document.getElementById(id);
         if (el) el.value = '';

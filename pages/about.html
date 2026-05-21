@@ -13,6 +13,7 @@
     <div class="nav-links">
       <a href="../index.html" id="nl-home">Home</a>
       <a href="shop.html"     id="nl-shop">Shop</a>
+      <a href="drops.html"    id="nl-drops">Drop Radar</a>
       <a href="sale.html"     id="nl-sale">Sale</a>
       <a href="about.html"    id="nl-about">About</a>
       <a href="contact.html"  id="nl-contact">Contact</a>
@@ -26,6 +27,7 @@
   <div class="mob-menu" id="mob-menu">
     <a href="../index.html" id="ml-home"    onclick="closeMob()">Home</a>
     <a href="shop.html"     id="ml-shop"    onclick="closeMob()">Shop</a>
+    <a href="drops.html"    id="ml-drops"   onclick="closeMob()">Drop Radar</a>
     <a href="sale.html"     id="ml-sale"    onclick="closeMob()">Sale</a>
     <a href="about.html"    id="ml-about"   onclick="closeMob()">About</a>
     <a href="contact.html"  id="ml-contact" onclick="closeMob()">Contact</a>
@@ -35,7 +37,7 @@
 
     <div class="page-header">
       <h1>Our Story</h1>
-      <p>OffCourt was founded by sneakerheads, for sneakerheads.</p>
+      <p>OffCourt Drop Club — campus-first limited sneaker releases.</p>
     </div>
 
     <!-- MISSION + VALUES -->
@@ -43,8 +45,9 @@
       <div class="sec-tag">✦ Who We Are</div>
       <div class="sec-title">Built for the Culture</div>
       <p style="color:var(--muted);max-width:620px;margin-bottom:32px;line-height:1.8">
-        OffCourt started in 2020 in a small garage with one goal: make premium sneakers accessible.
-        We curate the best kicks from the biggest brands so you can step out in style every day.
+        OffCourt is not a generic online mall. We focus on <strong>limited drops</strong> that sell out in minutes,
+        a <strong>Drop Radar waitlist</strong> so members get first dibs, and <strong>free campus pickup</strong> at Sector 17, Chandigarh.
+        Built as a 1st-year capstone with a real Supabase backend — accounts, waitlists, and orders actually save to the cloud.
       </p>
 
       <div class="about-grid">
@@ -108,19 +111,15 @@
   <div class="mbg" id="mbg">
     <div class="modal">
       <div class="modal-h"><div class="modal-title" id="modal-title">Checkout</div><button class="xb" onclick="closeModal()">✕</button></div>
-      <div class="modal-body" id="modal-body">
-        <div class="frow"><div class="fg"><label>First Name</label><input class="fi" id="o-fn" type="text" placeholder="First name" /></div><div class="fg"><label>Last Name</label><input class="fi" id="o-ln" type="text" placeholder="Last name" /></div></div>
-        <div class="fg"><label>Email</label><input class="fi" id="o-em" type="email" placeholder="your@email.com" /></div>
-        <div class="fg"><label>Address</label><input class="fi" id="o-ad" type="text" placeholder="Street address" /></div>
-        <div class="frow"><div class="fg"><label>City</label><input class="fi" id="o-ci" type="text" placeholder="City" /></div><div class="fg"><label>PIN</label><input class="fi" id="o-pi" type="text" placeholder="160001" /></div></div>
-        <div class="fg" style="margin-top:16px"><label>Card Number</label><input class="fi" id="o-cn" type="text" placeholder="4111 1111 1111 1111" maxlength="19" oninput="fmtCard(this)" /></div>
-        <div class="frow"><div class="fg"><label>Expiry</label><input class="fi" id="o-ex" type="text" placeholder="MM / YY" maxlength="7" oninput="fmtExp(this)" /></div><div class="fg"><label>CVV</label><input class="fi" id="o-cv" type="password" placeholder="•••" maxlength="3" /></div></div>
-        <button class="btn-gold" style="width:100%;margin-top:8px;padding:14px" onclick="placeOrder()">Place Order →</button>
-      </div>
+      <div class="modal-body" id="modal-body"></div>
     </div>
   </div>
   <div class="toast" id="toast"></div>
 
+  <script src="../js/config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../js/supabase-client.js"></script>
+  <script src="../js/db.js"></script>
   <script src="../js/products.js"></script>
   <script src="../js/auth.js"></script>
   <script src="../js/cart.js"></script>
